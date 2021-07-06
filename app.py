@@ -8,17 +8,8 @@ from scipy.io import loadmat
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
 from sklearn import metrics
-import pickle
 import tensorflow as tf
-
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
-from tensorflow.keras.layers import Dropout
-from tensorflow.keras.layers import Flatten
-from tensorflow.keras.layers import LSTM
-from tensorflow.keras.optimizers import Adam
 import matplotlib.pyplot as plt
-import seaborn as sns
 
 app = Flask(__name__)
 
@@ -64,7 +55,7 @@ def upload_file():
             filename1 = os.path.splitext(filename)[0]
             print(filename1)
             cycle_1 = int(request.form['Current_Cycle'])
-            mat = loadmat('D:/Lets_Hack_4.0.1/uploads/' + filename1 + '.mat')
+            mat = loadmat(UPLOAD_FOLDER + "/" + filename1 + '.mat')
             print('Total data in dataset: ', len(mat[filename1][0, 0]['cycle'][0]))
             counter = 0
             dataset = []
@@ -123,18 +114,6 @@ def upload_file():
             X_train, y_train = np.array(X_train), np.array(y_train)
 
             X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
-            # model = Sequential()
-            # model.add(LSTM(units=200, return_sequences=True, input_shape=(X_train.shape[1], 1)))
-            # model.add(Dropout(0.3))
-            # model.add(LSTM(units=200, return_sequences=True))
-            # model.add(Dropout(0.3))
-            # model.add(LSTM(units=200, return_sequences=True))
-            # model.add(Dropout(0.3))
-            # model.add(LSTM(units=200))
-            # model.add(Dropout(0.3))
-            # model.add(Dense(units=1))
-            # model.compile(optimizer='adam', loss='mean_squared_error')
-            # model.fit(X_train, y_train, epochs=200, batch_size=25)
             data_total = pd.concat((data_train['capacity'], data_test['capacity']), axis=0)
             inputs = data_total[len(data_total) - len(data_test) - 10:].values
             print(len(data_total) - len(data_test) - 10)
@@ -160,14 +139,13 @@ def upload_file():
             plot_per = data_test.loc[(data_test['cycle'] >= ln), ['cycle', 'pre']]
             plt.figure(figsize=(16, 10))
             plt.plot(plot_per['cycle'], plot_per['pre'], label="Prediction data", color='red')
-            plt.plot([0., 168], [1.26, 1.26], dashes=[6, 2], label="treshold")
+            plt.plot([0., 168], [1.4, 1.4], dashes=[6, 2], label="treshold")
             plt.ylabel('Capacity')
             adf = plt.gca().get_xaxis().get_major_formatter()
             plt.xlabel('cycle')
             plt.legend()
             plt.title('RUL For (prediction) start in cycle 50 , window-size=10')
             plt.savefig('static/trial.png')
-            plt.show()
             Pfil = 0
             a = data_test['capacity'].values
             b = data_test['pre'].values
@@ -177,8 +155,9 @@ def upload_file():
                     k = i
                     Pfil = k
                     break
-            print("The prediction fail at cycle number: " + str(Pfil + ln))
-            return render_template('complete.html', prediction_text='70% of Initial Capacity Will Reach At   ' + '' + str(Pfil + ln),pointPfil = Pfil+ln)
+            print(Pfil)
+            print("The prediction fail at cycle number: " + str(Pfil + ln - cycle_1))
+            return render_template('complete.html', prediction_text='Cycle Left Till Degradation   ' + '' + str(Pfil + ln - cycle_1),pointPfil = (Pfil+ln - cycle_1))
         else:
             flash('Allowed file types are txt, pdf, png, jpg, jpeg, gif')
             return redirect(request.url)
