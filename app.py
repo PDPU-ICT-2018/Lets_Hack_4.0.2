@@ -144,7 +144,7 @@ def upload_file():
             adf = plt.gca().get_xaxis().get_major_formatter()
             plt.xlabel('cycle')
             plt.legend()
-            plt.title('RUL For (prediction) start in cycle 50 , window-size=10')
+            plt.title('RUL Prediction For Battery ' + filename1 + 'Starting in ' + str(cycle_1) + 'Window_Size = 10')
             plt.savefig('static/trial.png')
             Pfil = 0
             a = data_test['capacity'].values
