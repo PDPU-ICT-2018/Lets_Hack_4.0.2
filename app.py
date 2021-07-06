@@ -37,8 +37,8 @@ def upload_form():
     return render_template('upload.html')
 
 
-@app.route('/', methods=['POST'])
-def upload_file():
+@app.route('/predict', methods=['POST'])
+def predict():
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:
