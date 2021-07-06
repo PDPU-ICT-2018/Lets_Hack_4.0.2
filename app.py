@@ -166,7 +166,7 @@ def upload_file():
             plt.xlabel('cycle')
             plt.legend()
             plt.title('RUL For (prediction) start in cycle 50 , window-size=10')
-            plt.savefig('images/trial.png')
+            plt.savefig('static/trial.png')
             plt.show()
             Pfil = 0
             a = data_test['capacity'].values
