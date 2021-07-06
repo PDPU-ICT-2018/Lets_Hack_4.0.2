@@ -178,7 +178,7 @@ def upload_file():
                     Pfil = k
                     break
             print("The prediction fail at cycle number: " + str(Pfil + ln))
-            return render_template('complete.html', prediction_text='70% of Initial Capacity Will Reach At   ' + '' + str(Pfil + ln))
+            return render_template('complete.html', prediction_text='70% of Initial Capacity Will Reach At   ' + '' + str(Pfil + ln),pointPfil = Pfil+ln)
         else:
             flash('Allowed file types are txt, pdf, png, jpg, jpeg, gif')
             return redirect(request.url)
